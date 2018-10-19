@@ -71,8 +71,6 @@ class TransformationMatrixPanel(bpy.types.Panel):
         row = layout.row()
         row.operator("text.get_calibration_matrix_operator")
         row = layout.row()
-        row.operator("text.get_editor_matrix_operator")
-        row = layout.row()
         row.operator("text.invert_editor_matrix_operator")
         row = layout.row()
         row.operator("text.multiply_with_editor_matrix_operator")
