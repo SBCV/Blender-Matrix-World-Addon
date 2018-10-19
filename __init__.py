@@ -17,7 +17,7 @@ from bpy_extras.io_utils import (ImportHelper,
 bl_info = {
     "name": "Matrix World",
     "description": "Allows to work directly with Matrix World in the GUI",
-    "author": "Your Name",
+    "author": "Sebastian Bullinger",
     "version": (0, 0, 1),
     "blender": (2, 79, 0),
     "location": "View3D",
@@ -65,20 +65,25 @@ class TransformationMatrixPanel(bpy.types.Panel):
             obj_name = 'NONE selected'
         row.label(text="Active object is: " + obj_name)
         row = layout.row()
+        row.operator("text.get_identity_matrix_operator")
+        row = layout.row()
         row.operator("text.get_matrix_operator")
         row = layout.row()
         row.operator("text.get_calibration_matrix_operator")
+        row = layout.row()
+        row.operator("text.get_editor_matrix_operator")
         row = layout.row()
         row.operator("text.invert_editor_matrix_operator")
         row = layout.row()
         row.operator("text.multiply_with_editor_matrix_operator")
 
         row = layout.row()
-        row.label(text="Current Matrix: ")
+        row.label(text="Current Editor Matrix: ")
         for line in textbox.lines:
             row = layout.row()
             row.label(text=line.body)
-            
+        row = layout.row()
+        row.label(text="Hover over this panel to refresh manually entered editor data") 
         row = layout.row()
         row.operator("text.set_matrix_operator")
         row = layout.row()
@@ -115,6 +120,20 @@ def set_transformation_matrix_to_editor(transformation_matrix):
         matrix_world_str = convert_matrix_to_string(transformation_matrix)
         textbox = bpy.data.texts.get("TransformationMatrix")
         textbox.from_string(matrix_world_str)
+
+
+class GetIdentityMatrixOperator(bpy.types.Operator):
+    bl_idname = "text.get_identity_matrix_operator"
+    bl_label = "Get Identity Matrix"
+
+    @classmethod
+    def poll(cls, context):
+        return True
+
+    def execute(self, context):
+        matrix_world = np.identity(4, dtype=float)
+        set_transformation_matrix_to_editor(matrix_world)
+        return {'FINISHED'}
 
 class GetTransformationMatrixOperator(bpy.types.Operator):
     bl_idname = "text.get_matrix_operator"
@@ -168,6 +187,7 @@ class GetCalibrationMatrixOperator(bpy.types.Operator):
         set_transformation_matrix_to_editor(calib_mat)
 
         return {'FINISHED'}
+
 
 class InvertEditorMatrixOperator(bpy.types.Operator):
     bl_idname = "text.invert_editor_matrix_operator"
@@ -270,6 +290,7 @@ def register():
     bpy.types.Text.open_in_info_window = bpy.props.BoolProperty("Open in INFO window", default=False, update=openInInfoWin)
     bpy.utils.register_class(LoadMatrixOperator)
     bpy.utils.register_class(TransformationMatrixPanel)
+    bpy.utils.register_class(GetIdentityMatrixOperator)
     bpy.utils.register_class(GetTransformationMatrixOperator)
     bpy.utils.register_class(GetCalibrationMatrixOperator)
     bpy.utils.register_class(InvertEditorMatrixOperator)
@@ -281,6 +302,7 @@ def register():
 def unregister():
     bpy.utils.unregister_class(LoadMatrixOperator)
     bpy.utils.unregister_class(TransformationMatrixPanel)
+    bpy.utils.unregister_class(GetIdentityMatrixOperator)
     bpy.utils.unregister_class(GetTransformationMatrixOperator)
     bpy.utils.unregister_class(GetCalibrationMatrixOperator)
     bpy.utils.unregister_class(InvertEditorMatrixOperator)
