@@ -19,7 +19,7 @@ bl_info = {
     "description": "Allows to work directly with Matrix World in the GUI",
     "author": "Sebastian Bullinger",
     "version": (0, 0, 1),
-    "blender": (2, 79, 0),
+    "blender": (2, 80, 0),
     "location": "View3D",
     "wiki_url": "",
     "category": "Object" }
@@ -213,7 +213,7 @@ class MultiplyWithEditorMatrixOperator(bpy.types.Operator):
     def execute(self, context):
         transformation_matrix = context.active_object.matrix_world
         multiply_matrix = get_transformation_matrix_from_editor()
-        result = multiply_matrix * transformation_matrix 				# apply the new matrix (multiplication from left side) 
+        result = multiply_matrix @ transformation_matrix 				# apply the new matrix (multiplication from left side) 
         set_transformation_matrix_to_editor(result)
 
         return {'FINISHED'}
