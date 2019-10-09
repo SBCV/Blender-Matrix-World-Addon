@@ -51,41 +51,46 @@ class TransformationMatrixPanel(bpy.types.Panel):
 
         textbox = bpy.data.texts.get("TransformationMatrix")
         row = layout.row()
-        row.label(text="Text Block", icon='WORLD_DATA')
-        row = layout.row()
-        box = row.box()
-        box.prop(textbox,"open_in_info_window",text="OPEN TEXT IN INFO WINDOW")
-        
-        row = layout.row()
-        row.operator("text.load_matrix_operator")
-        row = layout.row()
         if obj is not None:
             obj_name = obj.name
         else:
             obj_name = 'NONE selected'
-        row.label(text="Active object is: " + obj_name)
-        row = layout.row()
+        row.label(text="Selected object is: " + obj_name)
+        get_group_box = layout.box()
+        row = get_group_box.row()
         row.operator("text.get_identity_matrix_operator")
-        row = layout.row()
+        row = get_group_box.row()
         row.operator("text.get_matrix_operator")
-        row = layout.row()
+        row = get_group_box.row()
         row.operator("text.get_calibration_matrix_operator")
-        row = layout.row()
+
+        matrix_group_box = layout.box()
+        row = matrix_group_box.row()
+        row.label(text="Current Editor Matrix: ")
+        row.operator("text.refresh_matrix_operator")
+        matrix_box = matrix_group_box.box()
+        for line in textbox.lines:
+            row = matrix_box.row()
+            row.label(text=line.body)
+
+        edit_group = layout.box()
+        row = edit_group.row()
         row.operator("text.invert_editor_matrix_operator")
-        row = layout.row()
+        row = edit_group.row()
         row.operator("text.multiply_with_editor_matrix_operator")
 
-        row = layout.row()
-        row.label(text="Current Editor Matrix: ")
-        for line in textbox.lines:
-            row = layout.row()
-            row.label(text=line.body)
-        row = layout.row()
-        row.label(text="Hover over this panel to refresh manually entered editor data") 
-        row = layout.row()
+        set_group = layout.box()
+        row = set_group.row()
         row.operator("text.set_matrix_operator")
-        row = layout.row()
+
+        load_save_group = layout.box()
+        row = load_save_group.row()
+        row.operator("text.load_matrix_operator")
+        row = load_save_group.row()
         row.operator("text.save_matrix_operator")
+
+        box = layout.box()
+        box.prop(textbox, "open_in_info_window", text="Show Editor in Info Panel")
 
 
 def convert_matrix_to_string(some_matrix):
@@ -115,9 +120,9 @@ def get_transformation_matrix_from_editor():
     return mat
 
 def set_transformation_matrix_to_editor(transformation_matrix):
-        matrix_world_str = convert_matrix_to_string(transformation_matrix)
-        textbox = bpy.data.texts.get("TransformationMatrix")
-        textbox.from_string(matrix_world_str)
+    matrix_world_str = convert_matrix_to_string(transformation_matrix)
+    textbox = bpy.data.texts.get("TransformationMatrix")
+    textbox.from_string(matrix_world_str)
 
 
 class GetIdentityMatrixOperator(bpy.types.Operator):
@@ -135,7 +140,7 @@ class GetIdentityMatrixOperator(bpy.types.Operator):
 
 class GetTransformationMatrixOperator(bpy.types.Operator):
     bl_idname = "text.get_matrix_operator"
-    bl_label = "Get Transformation Matrix from Active Object"
+    bl_label = "Get Transformation Matrix from Selected Object"
 
     @classmethod
     def poll(cls, context):
@@ -149,7 +154,7 @@ class GetTransformationMatrixOperator(bpy.types.Operator):
     
 class GetCalibrationMatrixOperator(bpy.types.Operator):
     bl_idname = "text.get_calibration_matrix_operator"
-    bl_label = "Get Calibration Matrix from Active Camera"
+    bl_label = "Get Calibration Matrix from Selected Camera"
     
     def compute_calibration_mat(self, focal_length, cx, cy):
         return np.array([[focal_length, 0, cx],
@@ -186,10 +191,20 @@ class GetCalibrationMatrixOperator(bpy.types.Operator):
 
         return {'FINISHED'}
 
+class RefreshMatrixOperator(bpy.types.Operator):
+    bl_idname = "text.refresh_matrix_operator"
+    bl_label = "Refresh Editor Matrix after Editing"
+
+    @classmethod
+    def poll(cls, context):
+        return True
+
+    def execute(self, context):
+        return {'FINISHED'}
 
 class InvertEditorMatrixOperator(bpy.types.Operator):
     bl_idname = "text.invert_editor_matrix_operator"
-    bl_label = "Invert Editor Transformation Matrix"
+    bl_label = "Invert Editor Matrix"
 
     @classmethod
     def poll(cls, context):
@@ -204,7 +219,7 @@ class InvertEditorMatrixOperator(bpy.types.Operator):
 
 class MultiplyWithEditorMatrixOperator(bpy.types.Operator):
     bl_idname = "text.multiply_with_editor_matrix_operator"
-    bl_label = "Multiply Transformation Matrix With Editor Matrix"
+    bl_label = "Multiply Transformation Matrix of Object With Editor Matrix"
 
     @classmethod
     def poll(cls, context):
@@ -220,7 +235,7 @@ class MultiplyWithEditorMatrixOperator(bpy.types.Operator):
 
 class SetTransformationMatrixOperator(bpy.types.Operator):
     bl_idname = "text.set_matrix_operator"
-    bl_label = "Set Current Matrix as Transformation Matrix of Active Object"
+    bl_label = "Set Current Matrix as Transformation Matrix of Selected Object"
 
     @classmethod
     def poll(cls, context):
@@ -291,6 +306,7 @@ def register():
     bpy.utils.register_class(GetIdentityMatrixOperator)
     bpy.utils.register_class(GetTransformationMatrixOperator)
     bpy.utils.register_class(GetCalibrationMatrixOperator)
+    bpy.utils.register_class(RefreshMatrixOperator)
     bpy.utils.register_class(InvertEditorMatrixOperator)
     bpy.utils.register_class(MultiplyWithEditorMatrixOperator)
     bpy.utils.register_class(SetTransformationMatrixOperator)
@@ -303,6 +319,7 @@ def unregister():
     bpy.utils.unregister_class(GetIdentityMatrixOperator)
     bpy.utils.unregister_class(GetTransformationMatrixOperator)
     bpy.utils.unregister_class(GetCalibrationMatrixOperator)
+    bpy.utils.unregister_class(RefreshMatrixOperator)
     bpy.utils.unregister_class(InvertEditorMatrixOperator)
     bpy.utils.unregister_class(MultiplyWithEditorMatrixOperator)
     bpy.utils.unregister_class(SetTransformationMatrixOperator)
