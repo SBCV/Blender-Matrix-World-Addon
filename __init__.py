@@ -1,5 +1,6 @@
 import bpy
 from mathutils import Vector, Matrix
+import os
 import numpy as np
 
 from bpy.props import (CollectionProperty,
@@ -249,9 +250,12 @@ class SetTransformationMatrixOperator(bpy.types.Operator):
 
 class LoadMatrixOperator(bpy.types.Operator, ImportHelper):
     bl_idname = "text.load_matrix_operator"
-    bl_label = "Load Matrix from Disc"
+    bl_label = "Load Matrix from Disc (.npy, .txt)"
     
-    filename_ext = ".npy"
+    filter_glob : StringProperty(
+        default="*.npy;*.txt",
+        options={'HIDDEN'},
+        )
     
     @classmethod
     def poll(cls, context): 
@@ -259,16 +263,20 @@ class LoadMatrixOperator(bpy.types.Operator, ImportHelper):
 
     def execute(self, context):
         self.report({'INFO'}, 'Input File Path: ' + str(self.filepath))
-        mat = np.load(self.filepath)
+        if os.path.splitext(self.filepath)[1] == '.npy':
+            mat = np.load(self.filepath)
+        elif os.path.splitext(self.filepath)[1] == '.txt':
+            mat = np.loadtxt(self.filepath)
+        else:
+            return {'FINISHED'}
         set_transformation_matrix_to_editor(mat)
-        
         return {'FINISHED'}
 
 class SaveMatrixOperator(bpy.types.Operator, ExportHelper):
     bl_idname = "text.save_matrix_operator"
-    bl_label = "Save Current Matrix to Disc"
+    bl_label = "Save Current Matrix to Disc (.npy, .txt)"
     
-    filename_ext = ".npy"
+    filename_ext : StringProperty(default=".txt")
     
     @classmethod
     def poll(cls, context): 
@@ -280,7 +288,10 @@ class SaveMatrixOperator(bpy.types.Operator, ExportHelper):
         mat = get_transformation_matrix_from_editor()
         mat_np = np.array(mat)
         with open(self.filepath, "wb") as f:
-            np.save(f, mat_np)
+            if os.path.splitext(self.filepath)[1] == '.npy':
+                np.save(f, mat_np)
+            elif os.path.splitext(self.filepath)[1] == '.txt':
+                np.savetxt(f, mat_np)
         
         return {'FINISHED'}
 
