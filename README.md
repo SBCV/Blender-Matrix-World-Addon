@@ -1,5 +1,5 @@
 # Blender-Matrix-World-Addon
-This Blender addon allows to set and apply matrix world transformations to objects using Blender's GUI
+This Blender add-on allows to set and apply matrix world transformations to objects using Blender's GUI
 
 ## Overview
 The matrix is stored inside Blender's text editor (which can be used to edit the matrix)
@@ -20,7 +20,7 @@ Download the zip file (Blender-Matrix-World-Addon-master.zip) and install it usi
 
 
 Option 2:
-Clone the addon with 
+Clone the add-on with 
 ```
 git clone https://github.com/SBCV/Blender-Addon-Photogrammetry-Importer.git
 ```
@@ -29,6 +29,8 @@ The final structure must look as follows:
 - Blender-Matrix-World-Addon.zip /  
 	- Blender-Matrix-World-Addon/
 		- \_\_init\_\_.py
+		
+Use Blender's "Install Add-on from File..." option to install the add-on.
 
 ## Menu Overview
 ![alt text](https://github.com/SBCV/Blender-Matrix-World-Addon/blob/master/images/menu_annotations.JPG)
