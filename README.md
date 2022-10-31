@@ -24,11 +24,17 @@ Clone the add-on with
 ```
 git clone https://github.com/SBCV/Blender-Matrix-World-Addon.git
 ```
-and compress the folder to "Blender-Matrix-World-Addon" to a zip archive. 
+and compress the `matrix_world` folder to a zip archive (for example by running `create_blender_addon_zip.sh`).
+
 The final structure must look as follows:
-- Blender-Matrix-World-Addon.zip /  
-	- Blender-Matrix-World-Addon/
-		- \_\_init\_\_.py
+
+
+```
+matrix_world.zip
+└─── matrix_world
+    └─── operators
+    └─── __init__.py
+```
 		
 Use Blender's "Install Add-on from File..." option to install the add-on.
 
