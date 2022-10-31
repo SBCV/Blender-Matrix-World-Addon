@@ -1,3 +1,2 @@
-/__pycache__/__init__.cpython-37.pyc
+*.pyc
 matrix_world.zip
-matrix_world/__pycache__/
