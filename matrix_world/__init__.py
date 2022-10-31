@@ -3,32 +3,26 @@ from bpy.props import BoolProperty
 
 
 from matrix_world.operators.get_identity_matrix_op import (
-    GetIdentityMatrixOperator
+    GetIdentityMatrixOperator,
 )
 from matrix_world.operators.get_transformation_matrix_op import (
-    GetTransformationMatrixOperator
+    GetTransformationMatrixOperator,
 )
 from matrix_world.operators.get_calibration_matrix_op import (
-    GetCalibrationMatrixOperator
+    GetCalibrationMatrixOperator,
 )
-from matrix_world.operators.refresh_matrix_op import (
-    RefreshMatrixOperator
-)
+from matrix_world.operators.refresh_matrix_op import RefreshMatrixOperator
 from matrix_world.operators.invert_editor_matrix_op import (
-    InvertEditorMatrixOperator
+    InvertEditorMatrixOperator,
 )
 from matrix_world.operators.multiply_with_editor_matrix_op import (
-     MultiplyWithEditorMatrixOperator
+    MultiplyWithEditorMatrixOperator,
 )
 from matrix_world.operators.set_transformation_matrix_op import (
-     SetTransformationMatrixOperator
+    SetTransformationMatrixOperator,
 )
-from matrix_world.operators.load_matrix_op import (
-     LoadMatrixOperator
-)
-from matrix_world.operators.save_matrix_op import (
-     SaveMatrixOperator
-)
+from matrix_world.operators.load_matrix_op import LoadMatrixOperator
+from matrix_world.operators.save_matrix_op import SaveMatrixOperator
 
 
 bl_info = {
@@ -39,7 +33,8 @@ bl_info = {
     "blender": (2, 80, 0),
     "location": "View3D",
     "wiki_url": "",
-    "category": "Object" }
+    "category": "Object",
+}
 
 
 class TransformationMatrixPanel(bpy.types.Panel):
@@ -51,10 +46,10 @@ class TransformationMatrixPanel(bpy.types.Panel):
     # bl_region_type = "WINDOW"
     # bl_context = "object"
 
-    textblock = None # text area to use for this panel
+    textblock = None  # text area to use for this panel
 
     @classmethod
-    def poll(cls,context):
+    def poll(cls, context):
         return True
 
     def draw(self, context):
@@ -71,7 +66,7 @@ class TransformationMatrixPanel(bpy.types.Panel):
         if obj is not None:
             obj_name = obj.name
         else:
-            obj_name = 'NONE selected'
+            obj_name = "NONE selected"
         row.label(text="Selected object is: " + obj_name)
         get_group_box = layout.box()
         row = get_group_box.row()
@@ -107,22 +102,25 @@ class TransformationMatrixPanel(bpy.types.Panel):
         row.operator("text.save_matrix_operator")
 
         box = layout.box()
-        box.prop(textbox, "open_in_info_window", text="Show Editor in Info Panel")
+        box.prop(
+            textbox, "open_in_info_window", text="Show Editor in Info Panel"
+        )
 
 
-def openInInfoWin(self,context):
+def openInInfoWin(self, context):
     if self.open_in_info_window:
         for area in context.screen.areas:
-            if area.type == 'INFO':
-                area.type = 'TEXT_EDITOR'
+            if area.type == "INFO":
+                area.type = "TEXT_EDITOR"
                 area.spaces[0].text = TransformationMatrixPanel.textblock
                 break
     else:
         for area in context.screen.areas:
-            if area.type == 'TEXT_EDITOR':
-                area.type = 'INFO'
+            if area.type == "TEXT_EDITOR":
+                area.type = "INFO"
                 break
         return None
+
 
 def register():
     bpy.types.Text.open_in_info_window = bpy.props.BoolProperty(
@@ -138,7 +136,7 @@ def register():
     bpy.utils.register_class(MultiplyWithEditorMatrixOperator)
     bpy.utils.register_class(SetTransformationMatrixOperator)
     bpy.utils.register_class(SaveMatrixOperator)
-    
+
 
 def unregister():
     bpy.utils.unregister_class(LoadMatrixOperator)
@@ -151,7 +149,7 @@ def unregister():
     bpy.utils.unregister_class(MultiplyWithEditorMatrixOperator)
     bpy.utils.unregister_class(SetTransformationMatrixOperator)
     bpy.utils.unregister_class(SaveMatrixOperator)
-    
 
-if __name__ in ["__main__","textbox"]:
+
+if __name__ in ["__main__", "textbox"]:
     register()

@@ -10,4 +10,4 @@ class RefreshMatrixOperator(bpy.types.Operator):
         return True
 
     def execute(self, context):
-        return {'FINISHED'}
+        return {"FINISHED"}

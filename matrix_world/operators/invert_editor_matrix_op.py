@@ -17,4 +17,4 @@ class InvertEditorMatrixOperator(bpy.types.Operator):
         transformation_matrix = get_transformation_matrix_from_editor()
         inverse = transformation_matrix.inverted()
         set_transformation_matrix_to_editor(inverse)
-        return {'FINISHED'}
+        return {"FINISHED"}

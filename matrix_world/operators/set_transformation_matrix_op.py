@@ -1,5 +1,8 @@
 import bpy
-from matrix_world.operators.utility import get_transformation_matrix_from_editor
+from matrix_world.operators.utility import (
+    get_transformation_matrix_from_editor,
+)
+
 
 class SetTransformationMatrixOperator(bpy.types.Operator):
     bl_idname = "text.set_matrix_operator"
@@ -12,5 +15,5 @@ class SetTransformationMatrixOperator(bpy.types.Operator):
     def execute(self, context):
         mat = get_transformation_matrix_from_editor()
         context.active_object.matrix_world = mat
-        
-        return {'FINISHED'}
+
+        return {"FINISHED"}
