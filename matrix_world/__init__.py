@@ -30,7 +30,7 @@ bl_info = {
     "description": "Allows to work directly with Matrix World in the GUI",
     "author": "Sebastian Bullinger",
     "version": (0, 0, 1),
-    "blender": (2, 80, 0),
+    "blender": (3, 3, 1),
     "location": "View3D",
     "wiki_url": "",
     "category": "Object",
