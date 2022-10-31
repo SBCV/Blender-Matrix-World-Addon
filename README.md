@@ -22,7 +22,7 @@ Download the zip file (Blender-Matrix-World-Addon-master.zip) and install it usi
 Option 2:
 Clone the add-on with 
 ```
-git clone https://github.com/SBCV/Blender-Addon-Photogrammetry-Importer.git
+git clone https://github.com/SBCV/Blender-Matrix-World-Addon.git
 ```
 and compress the folder to "Blender-Matrix-World-Addon" to a zip archive. 
 The final structure must look as follows:
